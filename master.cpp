@@ -5,12 +5,14 @@
 #include <ctime>
 #include <unistd.h>
 
+using namespace std;
+
 class Player {
 public:
     Player() : ind(0), prev(nullptr), next(nullptr) {}
 
     int ind;
-    std::string song;
+    string song;
     Player* prev;
     Player* next;
 };
@@ -21,7 +23,7 @@ private:
     Player* last;
     int num;
     
-    int inPlaylist(const std::string& newSong) {
+    int inPlaylist(const string& newSong) {
         Player* temp = head;
         while (temp != nullptr) {
             if (newSong == temp->song)
@@ -40,9 +42,9 @@ public:
     Player* getHead() const {
         return head;
     }
-    void addSong(const std::string& newSong) {
+    void addSong(const string& newSong) {
         if (inPlaylist(newSong)) {
-            std::cout << "Song is already in the playlist.\n";
+            cout << "Song is already in the playlist.\n";
         } else {
             Player* newPlayer = new Player();
             newPlayer->song = newSong;
@@ -61,7 +63,7 @@ public:
 
     void deleteSong(int n) {
         if (head == nullptr && last == nullptr) {
-            std::cout << "Your playlist is already empty.\n";
+            cout << "Your playlist is already empty.\n";
         } else {
             Player* temp = head;
 
@@ -118,7 +120,8 @@ public:
         Player* tempL = last;
 
         if (head == nullptr && last == nullptr) {
-            std::cout << "Empty Playlist.\n";
+            cout << "Empty Playlist.\n";
+            return;
         } else {
             while (tempS != tempL) {
                 if (tempS == head) {
@@ -139,23 +142,25 @@ public:
         }
     }
 
-    void displayPlaylist() {
+    int displayPlaylist() {
         if (head == nullptr && last == nullptr) {
-            std::cout << "Empty playlist.\n";
+            cout << "Empty playlist.\n";
+            return 0;
         } else {
             Player* temp = head;
             while (temp != nullptr) {
-                std::cout << temp->ind << " " << temp->song << std::endl;
+                cout << temp->ind << " " << temp->song << endl;
                 temp = temp->next;
+                return 1;
             }
         }
     }
 
-    void saveToFile(const std::string& filename) {
-        std::ofstream file(filename);
+    void saveToFile(const string& filename) {
+        ofstream file(filename);
 
         if (!file.is_open()) {
-            std::cerr << "Error opening file: " << filename << std::endl;
+            cerr << "Error opening file: " << filename << endl;
             return;
         }
 
@@ -170,15 +175,15 @@ public:
         file.close();
     }
 
-    void loadFromFile(const std::string& filename) {
-        std::ifstream file(filename);
+    void loadFromFile(const string& filename) {
+        ifstream file(filename);
 
         if (!file.is_open()) {
-            std::cerr << "Error opening file: " << filename << std::endl;
+            cerr << "Error opening file: " << filename << endl;
             return;
         }
 
-        std::string song;
+        string song;
         while (file >> song) {
             addSong(song);
         }
@@ -193,33 +198,33 @@ int main() {
     int choice;
     int op = 1;
     while (op == 1) {
-        std::cout << "To add a song to your playlist, enter 1:\n";
-        std::cout << "To delete a song from your playlist, enter 2:\n";
-        std::cout << "To delete the playlist, enter 3:\n";
-        std::cout << "To display the playlist, enter 4:\n";
-        std::cout << "To save to file, enter 5:\n";
-        std::cout << "To load from file, enter 6:\n";
-        std::cout << "To exit, enter 0:\n";
+        cout << "To add a song to your playlist, enter 1:\n";
+        cout << "To delete a song from your playlist, enter 2:\n";
+        cout << "To delete the playlist, enter 3:\n";
+        cout << "To display the playlist, enter 4:\n";
+        cout << "To save to file, enter 5:\n";
+        cout << "To load from file, enter 6:\n";
+        cout << "To exit, enter 0:\n";
 
-        std::cin >> choice;
+        cin >> choice;
 
         switch (choice) {
             case 1: {
-                std::cout << "Enter the name of the song (without spaces): ";
-                std::string newSong;
-                std::cin >> newSong;
+                cout << "Enter the name of the song (without spaces): ";
+                string newSong;
+                cin >> newSong;
                 playlist.addSong(newSong);
                 break;
             }
             case 2: {
-                playlist.displayPlaylist();
+                int notEmpty = playlist.displayPlaylist();
                 Player* temp = playlist.getHead();
-                std::cout << "Enter the serial number of the song you want to delete: ";
                 if (temp != nullptr) {
+                     cout << "Enter the serial number of the song you want to delete: ";
                     int srn;
-                    std::cin >> srn;
+                    cin >> srn;
                     if (srn < 1 || srn > playlist.getNum()) {
-                        std::cout << "Serial number not in range.\n";
+                        cout << "Serial number not in range.\n";
                     } else {
                         playlist.deleteSong(srn);
                     }
@@ -234,35 +239,35 @@ int main() {
                 playlist.displayPlaylist();
                 break;
             case 5: {
-                std::cout << "Enter the file name to save to: ";
-                std::string filename;
-                std::cin >> filename;
+                cout << "Enter the file name to save to: ";
+                string filename;
+                cin >> filename;
                 playlist.saveToFile(filename);
                 break;
             }
             case 6: {
-                std::cout << "Enter the file name to load from: ";
-                std::string filename;
-                std::cin >> filename;
+                cout << "Enter the file name to load from: ";
+                string filename;
+                cin >> filename;
                 playlist.loadFromFile(filename);
                 break;
             }
             case 0:
                 break;
             default:
-                std::cout << "Invalid choice.\n";
+                cout << "Invalid choice.\n";
         }
 
-        std::cout << "If you want to perform another action, enter 1; otherwise, enter 0: ";
-        std::cin >> op;
+        cout << "If you want to perform another action, enter 1; otherwise, enter 0: ";
+        cin >> op;
 
         if (op == 0) {
             break;
         }
     }
 
-    std::cout << "Playlist:\n";
-    std::cout << "*************\n";
+    cout << "Playlist:\n";
+    cout << "*****\n";
     playlist.displayPlaylist();
 
     return 0;
